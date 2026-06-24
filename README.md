@@ -9,7 +9,10 @@
 </p>
 
 
-[![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
+<p align="center">
+  [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
+</p>
+
 
 This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v2). Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
 
