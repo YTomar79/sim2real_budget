@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+logs/
+
+# Trained policies and other large binaries.
+*.zip
+
+# Raw per-run outputs (regenerate via the pipeline). The aggregated CSVs and
+# figures under results/ are tracked so the README renders and the headline
+# numbers reproduce without re-running the full sweep.
+results/sweep/
+results/smoke/
+results/smoke_*/
+results/_*/
+results/exp_*/
