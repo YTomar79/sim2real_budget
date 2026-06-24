@@ -68,52 +68,81 @@ rq2_sim2real_budget/
     └── exp_priorDR.csv        prior-range DR baseline (n=0, ignore the estimate)
 ```
 
-## Quick start
+## Replicating the experiments
+
+Every command is run from the repository root. The full sweep is CPU-only and
+embarrassingly parallel; on a single machine it runs sequentially as written.
+
+**1. Set up the environment**
 
 ```bash
-pip install -r requirements.txt        # or: conda env create -f environment.yml
-bash run_local.sh
+git clone https://github.com/YOUR_USERNAME/rq2_sim2real_budget.git
+cd rq2_sim2real_budget
+
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+# or, with conda:  conda env create -f environment.yml && conda activate sim2real
 ```
 
-`run_local.sh` runs a handful of configs with tiny timesteps and the fast "ideal"
-identifier, then writes `results/smoke_summary.csv` and `results/smoke_figures/`.
+**2. Smoke test (optional, ~1 min)**
 
-## Reproducing the full results
+Verifies the pipeline end-to-end with tiny timesteps and the fast "ideal"
+identifier before committing to the full sweep.
 
 ```bash
-# Run the 250-run grid (sequential; parallelize across the task ids as you like).
-for TID in $(seq 0 $(($(python -m src.config | sed -n 's/TOTAL_JOBS=//p') - 1))); do
+bash run_local.sh        # writes results/smoke_summary.csv + results/smoke_figures/
+```
+
+**3. Run the main 250-run sweep**
+
+Each task decodes its own `(n, w, seed)` from the task id via
+`config.decode_task_id`, so any executor (a shell loop, `xargs -P`, GNU parallel,
+or a job scheduler) sweeps the grid without a separate index file. Re-running is
+idempotent — a run whose `result.json` is `status: ok` is skipped, so a partial
+sweep resumes safely.
+
+```bash
+N_JOBS=$(python -m src.config | sed -n 's/TOTAL_JOBS=//p')   # 250
+
+# Sequential:
+for TID in $(seq 0 $((N_JOBS - 1))); do
     python -m src.train --task_id "$TID" --output_root results/sweep
 done
 
+# ...or parallel across 8 workers:
+# seq 0 $((N_JOBS - 1)) | xargs -P 8 -I{} \
+#     python -m src.train --task_id {} --output_root results/sweep
+```
+
+**4. Aggregate, test, and plot**
+
+```bash
 python -m src.aggregate --output_root results/sweep --out results/summary.csv
-python -m src.stats     --summary results/summary.csv      # CIs for every claim
+python -m src.stats     --summary results/summary.csv                       # CIs for every claim
 python -m src.plot      --summary results/summary.csv --outdir results/figures
 ```
 
-Each run decodes its own `(n, w, seed)` from the task id via
-`config.decode_task_id`, so any executor, such as, for example, a shell loop, GNU parallel, or a job
-scheduler sweeps the grid without a separate index file. Re-running is
-idempotent: a run whose `result.json` is `status: ok` is skipped, so a partial
-sweep can be resumed safely.
+`src.stats` prints the per-cell mean ± SEM table and a bootstrap CI for each
+contrast quoted above; `src.plot` regenerates `heatmap.png` and `pareto.png`.
 
+**5. Robustness experiments (optional)**
 
-## Grid and configuration
+Generate the run lists, execute each, then aggregate (and plot the gap sweeps).
 
-`n ∈ {0, 5, 10, 25, 50}` × `w ∈ {0, 0.1, 0.2, 0.3, 0.5}` × `seed ∈ {0..9}` =
-250 runs. The learner is SAC (`total_timesteps = 75000`); the reality gap is
-`theta* = (2.0, 1.5)` with sensor noise `1.0`. Everything is defined in
-`src/config.py` — edit only that file to change the sweep.
+```bash
+python -m src.make_manifests --outdir manifests        # writes manifests/*.txt
 
+for NAME in exp_priorDR exp_gap_1.5_1.2 exp_gap_2.5_2.0 exp_noise_0.5 exp_noise_2.0; do
+    while read -r ARGS; do
+        python -m src.train $ARGS --output_root "results/$NAME"
+    done < "manifests/$NAME.txt"
+    python -m src.aggregate --output_root "results/$NAME" --out "results/$NAME.csv"
+done
 
-Key overrides (CLI flags on `src.train`):
-
-- `--total_timesteps` — learner budget per run. All reported numbers use 75000.
-- `--id_mode` — `grid` (least-squares identification; the default behind every
-  reported result) or `ideal` (a fast ablation that skips data collection;
-  not used for any reported figure).
-- `--theta_star`, `--id_obs_noise`, `--dr_mode` — vary the reality gap, sensor
-  noise, and randomization scheme for the robustness experiments.
+# Figures for the two reality-gap sweeps:
+python -m src.plot --summary results/exp_gap_1.5_1.2.csv --outdir results/fig_gap_1.5_1.2
+python -m src.plot --summary results/exp_gap_2.5_2.0.csv --outdir results/fig_gap_2.5_2.0
+```
   
 
 ## Citation
