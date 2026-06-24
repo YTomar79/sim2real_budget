@@ -4,7 +4,8 @@
 
 ¹ Purdue University 
 
-<small>\*Equal contribution</small> 
+<span style="font-size: 0.8em; opacity: 0.7;">\* Equal contribution</span>
+
 
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
