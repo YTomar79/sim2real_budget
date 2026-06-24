@@ -4,7 +4,7 @@
 
 ¹ Purdue University 
 
-<span style="font-size: 0.8em; opacity: 0.7;">\* Equal contribution</span>
+<span style="font-size: 0.1em; opacity: 0.1;">\* Equal contribution</span>
 
 
 
