@@ -3,15 +3,15 @@
 <h1>How Should a Simulation-to-Reality Transfer Budget Be Spent?</h1>
 
 <p>
-  <b>Syed Hamzah Rizvi*</b> &nbsp;&middot;&nbsp; <b>Yash Vardhan Tomar*</b>
+  <b>Syed Hamzah Rizvi</b><sup>*</sup> &nbsp;&middot;&nbsp; <b>Yash Vardhan Tomar</b><sup>*</sup>
   <br>
   Purdue University
   <br>
-  <sup><sup>*Equal contribution</sup></sup>
+  <sub><sup>*</sup> Equal contribution</sub>
 </p>
 
-<a href="https://arxiv.org">
-  <img src="https://shields.io" alt="arXiv" height="20">
+<a href="https://arxiv.org/abs/2606.22062">
+  <img src="https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg" alt="arXiv" height="20">
 </a>
 
 </div>
