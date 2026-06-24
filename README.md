@@ -3,6 +3,7 @@
 **Syed Hamzah Rizvi**\*¹, **Yash Vardhan Tomar**\*¹
 
 ¹ Purdue University 
+
 <small>\*Equal contribution</small> 
 
 
