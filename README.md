@@ -20,19 +20,52 @@ Simulation-to-reality transfer, often called sim-to-real transfer, is a central 
 ## Layout
 
 ```
-src/
-  config.py          grid + constants + task_id <-> (n, w, seed) mapping (single source of truth)
-  param_pendulum.py  Pendulum env with settable (mass, length)
-  dr_wrapper.py      domain-randomization reset wrapper
-  system_id.py       estimate theta_hat from n real rollouts (grid ID, or "ideal" ablation)
-  train.py           one run: ID -> DR-train -> zero-shot eval -> result.json
-  evaluate.py        zero-shot evaluation on the real system
-  aggregate.py       collect result.json files -> summary.csv
-  stats.py           per-cell SEM + paired-bootstrap CIs for the reported contrasts
-  plot.py            heatmap.png + pareto.png
-  make_manifests.py  emit run lists for the robustness experiments
-run_local.sh         quick local smoke test
-results/             aggregated CSVs + figures (raw per-run artifacts are gitignored)
+rq2_sim2real_budget/
+├── README.md                  this file
+├── LICENSE                    MIT
+├── requirements.txt           pip dependencies
+├── environment.yml            equivalent conda environment (`sim2real`)
+├── run_local.sh               quick local smoke test (tiny budget, "ideal" ID)
+│
+├── src/                       the experiment package
+│   │
+│   │   # — configuration (single source of truth) —
+│   ├── config.py              sweep grid, physical constants, HParams,
+│   │                          and the task_id <-> (n, w, seed) mapping
+│   │
+│   │   # — environment & methods —
+│   ├── param_pendulum.py      Pendulum env with settable (mass, length);
+│   │                          make_real_env() is the held-out "real" system
+│   ├── dr_wrapper.py          domain-randomization reset wrapper (the `w` lever)
+│   ├── system_id.py           estimate theta_hat from n real rollouts (the `n`
+│   │                          lever): "grid" least-squares ID, or "ideal" ablation
+│   │
+│   │   # — run pipeline —
+│   ├── train.py               one run: ID -> DR-train (SAC/PPO) -> eval -> result.json
+│   ├── evaluate.py            zero-shot evaluation on the real system
+│   ├── make_manifests.py      emit runner-agnostic command lists for the
+│   │                          robustness experiments
+│   │
+│   │   # — analysis & figures —
+│   ├── aggregate.py           collect per-run result.json files -> summary.csv
+│   ├── stats.py               per-cell SEM + paired-bootstrap CIs for every claim
+│   └── plot.py                render heatmap.png + pareto.png from a summary CSV
+│
+└── results/                   tracked: aggregated tables + figures
+    │                          (raw per-run result.json / model.zip are gitignored)
+    ├── summary.csv            tidy table for the main 250-run sweep
+    ├── figures/               main-sweep figures
+    │   ├── heatmap.png        mean zero-shot return over the (n, w) grid
+    │   └── pareto.png         best width per budget vs. pure-breadth / -fidelity
+    │
+    │   # — robustness experiments (aggregated CSV + matching figures) —
+    ├── exp_gap_1.5_1.2.csv    smaller reality gap, theta* = (1.5, 1.2)
+    ├── exp_gap_2.5_2.0.csv    larger reality gap,  theta* = (2.5, 2.0)
+    ├── fig_gap_1.5_1.2/       heatmap.png + pareto.png for the smaller gap
+    ├── fig_gap_2.5_2.0/       heatmap.png + pareto.png for the larger gap
+    ├── exp_noise_0.5.csv      lower sensor-noise sweep
+    ├── exp_noise_2.0.csv      higher sensor-noise sweep
+    └── exp_priorDR.csv        prior-range DR baseline (n=0, ignore the estimate)
 ```
 
 ## Quick start
