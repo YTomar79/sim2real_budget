@@ -1,6 +1,16 @@
+# Loose ranges for a fresh install. Upper bounds guard against breaking changes
+# in the libraries most likely to shift numerical results (notably the RL stack:
+# stable-baselines3 and torch can change default initialization and RNG handling
+# across minor releases).
+#
+# For EXACT reproduction of the paper's numbers, install from the pinned lockfile
+# instead (see README "Exact reproduction"):
+#     pip install -r requirements.lock.txt
+#
+# Requires Python 3.11 (see environment.yml).
 gymnasium>=0.29,<1.1
-stable-baselines3>=2.3.0
-torch>=2.1
-numpy>=1.24
-pandas>=2.0
-matplotlib>=3.7
+stable-baselines3>=2.3.0,<2.7
+torch>=2.1,<2.9
+numpy>=1.24,<3.0
+pandas>=2.0,<3.0
+matplotlib>=3.7,<4.0

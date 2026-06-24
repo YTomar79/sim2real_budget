@@ -5,6 +5,7 @@
 ¹ Purdue University
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
+[![CI](https://github.com/YTomar79/sim2real_budget/actions/workflows/ci.yml/badge.svg)](https://github.com/YTomar79/sim2real_budget/actions/workflows/ci.yml)
 
 <sub><sup>\*</sup> Co-first Authors with equal contribution</sub>
 
@@ -20,7 +21,7 @@ Simulation-to-reality transfer, often called sim-to-real transfer, is a central 
 ## Layout
 
 ```
-rq2_sim2real_budget/
+sim2real_budget/
 ├── README.md                  this file
 ├── LICENSE                    MIT
 ├── requirements.txt           pip dependencies
@@ -65,6 +66,8 @@ rq2_sim2real_budget/
     ├── fig_gap_2.5_2.0/       heatmap.png + pareto.png for the larger gap
     ├── exp_noise_0.5.csv      lower sensor-noise sweep
     ├── exp_noise_2.0.csv      higher sensor-noise sweep
+    ├── fig_noise_0.5/         heatmap.png + pareto.png for the lower-noise sweep
+    ├── fig_noise_2.0/         heatmap.png + pareto.png for the higher-noise sweep
     └── exp_priorDR.csv        prior-range DR baseline (n=0, ignore the estimate)
 ```
 
@@ -76,8 +79,8 @@ embarrassingly parallel; on a single machine it runs sequentially as written.
 **1. Set up the environment**
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/rq2_sim2real_budget.git
-cd rq2_sim2real_budget
+git clone https://github.com/YTomar79/sim2real_budget.git
+cd sim2real_budget
 
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
@@ -139,11 +142,34 @@ for NAME in exp_priorDR exp_gap_1.5_1.2 exp_gap_2.5_2.0 exp_noise_0.5 exp_noise_
     python -m src.aggregate --output_root "results/$NAME" --out "results/$NAME.csv"
 done
 
-# Figures for the two reality-gap sweeps:
+# Figures for the reality-gap sweeps:
 python -m src.plot --summary results/exp_gap_1.5_1.2.csv --outdir results/fig_gap_1.5_1.2
 python -m src.plot --summary results/exp_gap_2.5_2.0.csv --outdir results/fig_gap_2.5_2.0
+
+# Figures for the sensor-noise sweeps:
+python -m src.plot --summary results/exp_noise_0.5.csv --outdir results/fig_noise_0.5
+python -m src.plot --summary results/exp_noise_2.0.csv --outdir results/fig_noise_2.0
 ```
-  
+
+## Reproducibility notes
+
+- **Seeds.** Each run is fully seeded from its `(n, w, seed)`: the seed is
+  threaded into `numpy`, `torch`, the SB3 model, environment resets, the
+  domain-randomization RNG, and the system-identification rollouts. Same-seed
+  reruns are bit-for-bit comparable, and re-running the sweep is idempotent.
+- **Shipped data.** `results/summary.csv` holds all 250 per-run rows (one per
+  `(n, w, seed)`), so the paired-bootstrap CIs in `src.stats` reproduce from the
+  committed CSVs without re-running the sweep.
+- **Exact environment.** `requirements.txt` / `environment.yml` use ranges for a
+  fresh install. Because minor releases of the RL stack can shift numerical
+  results, exact reproduction uses a pinned lockfile. Generate it once on the
+  machine that ran the sweep and commit it:
+
+  ```bash
+  pip freeze > requirements.lock.txt   # then: git add requirements.lock.txt && git commit
+  ```
+
+  Others reproduce with `pip install -r requirements.lock.txt`.
 
 ## Citation
 

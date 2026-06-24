@@ -1,4 +1,9 @@
-# Conda environment for reproducing the experiments.
+# Conda environment for a fresh install (Python is pinned to 3.11; the package
+# ranges match requirements.txt). These ranges install a working environment but
+# do NOT reproduce a single fixed set of versions. For EXACT reproduction of the
+# paper's numbers, use the pinned lockfile (see README "Exact reproduction"):
+#     pip install -r requirements.lock.txt
+#
 # Create with:   conda env create -f environment.yml
 # Activate with: conda activate sim2real
 name: sim2real
@@ -9,8 +14,8 @@ dependencies:
   - pip
   - pip:
       - gymnasium>=0.29,<1.1
-      - stable-baselines3>=2.3.0
-      - torch>=2.1
-      - numpy>=1.24
-      - pandas>=2.0
-      - matplotlib>=3.7
+      - stable-baselines3>=2.3.0,<2.7
+      - torch>=2.1,<2.9
+      - numpy>=1.24,<3.0
+      - pandas>=2.0,<3.0
+      - matplotlib>=3.7,<4.0
