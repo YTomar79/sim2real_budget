@@ -6,6 +6,8 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
 [![CI](https://github.com/YTomar79/sim2real_budget/actions/workflows/ci.yml/badge.svg)](https://github.com/YTomar79/sim2real_budget/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <sub><sup>\*</sup> Co-first Authors with equal contribution</sub>
 
