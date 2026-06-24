@@ -85,7 +85,7 @@ If you use this code or find this work helpful, please cite:
 @article{rizvi-tomar2026sim2realbudget,
   title={How Should a Simulation-to-Reality Transfer Budget Be Spent?},
   author={Rizvi, Syed Hamzah and Tomar, Yash Vardhan},
-  journal={arXiv preprint arXiv:2506.23033},
+  journal={arXiv preprint arXiv:2606.22062},
   year={2026}
 }
 ```
