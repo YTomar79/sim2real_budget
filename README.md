@@ -6,11 +6,13 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
 
-<sub><sup>\*</sup> Co-first Authors with Equal contribution</sub>
+<sub><sup>\*</sup> Co-first Authors with equal contribution</sub>
 
 ***
 
-This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v1). Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
+This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v1). 
+
+Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
 
 
 ## Abstract
