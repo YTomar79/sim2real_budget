@@ -10,7 +10,9 @@
 
 
 <p align="center">
-  [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
+  <a href="https://arxiv.org/abs/2606.22062">
+    <img src="https://shields.io" alt="arXiv">
+  </a>
 </p>
 
 
