@@ -4,7 +4,7 @@
 
 ¹ Purdue University 
 
-$\text{\scriptsize \*Equal contribution}$
+<sup><sup>\*Equal contribution</sup></sup>
 
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
