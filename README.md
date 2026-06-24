@@ -1,6 +1,8 @@
-<h1 align="center">How Should a Simulation-to-Reality Transfer Budget Be Spent?</h1>
+<div align="center">
 
-<p align="center">
+<h1>How Should a Simulation-to-Reality Transfer Budget Be Spent?</h1>
+
+<p>
   <b>Syed Hamzah Rizvi*</b> &nbsp;&middot;&nbsp; <b>Yash Vardhan Tomar*</b>
   <br>
   Purdue University
@@ -8,16 +10,16 @@
   <sup><sup>*Equal contribution</sup></sup>
 </p>
 
-
-<div align="center">
-
-[![arXiv](https://shields.io)](https://arxiv.org/abs/2606.22062)
+<a href="https://arxiv.org">
+  <img src="https://shields.io" alt="arXiv" height="20">
+</a>
 
 </div>
 
+***
 
+This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v1). Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
 
-This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v2). Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
 
 ## Abstract
 Simulation-to-reality transfer, often called sim-to-real transfer, is a central challenge in robot learning. Yet, the tradeoff between measuring a system more accurately and training over a broader range of simulated dynamics is still poorly understood. In this work, we focused on the allocation of real-robot measurement time between system identification and domain randomization. We studied this tradeoff in a controlled sim-to-sim pendulum setting, where a hidden-parameter model stands in for the physical robot, and the experiment sweeps identification rollouts against the width of the randomization distribution. Across the reality gaps and noise levels we tested, the measurement budget did most of the work. A small number of identification rollouts closed most of the transfer gap, and once any real data was available, policies performed best when trained at the estimated parameters rather than over a widened randomization band. Broad randomization that contained the true system still did not substitute for measurement. These results hold in a benign regime where the dynamics are identifiable and only two parameters are unknown, so structural model mismatch remains the setting where randomization breadth may become more valuable. Overall, our results suggest that sim-to-real pipelines should first measure the parameters they can and reserve randomization for the uncertainty that remains.
