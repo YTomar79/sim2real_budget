@@ -1,12 +1,12 @@
 # How Should a Simulation-to-Reality Transfer Budget Be Spent?
 
-**Syed Hamzah Rizvi**<sup>\*</sup> · **Yash Vardhan Tomar**<sup>\*</sup>
+**Syed Hamzah Rizvi¹**<sup>\*</sup> · **Yash Vardhan Tomar¹**<sup>\*</sup>
 
-Purdue University
-
-<sub><sup>\*</sup> Equal contribution</sub>
+¹ Purdue University
 
 [![arXiv](https://img.shields.io/badge/arXiv-2606.22062-b31b1b.svg)](https://arxiv.org/abs/2606.22062)
+
+<sub><sup>\*</sup> Equal contribution</sub>
 
 ***
 
