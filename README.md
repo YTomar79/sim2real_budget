@@ -1,43 +1,24 @@
-# Budgeted Sim-to-Real: Domain-Randomization Breadth vs. Simulator Fidelity
+# How Should a Simulation-to-Reality Transfer Budget Be Spent?
 
-Domain-randomization *breadth* and simulator *fidelity* (system identification)
-are usually pursued in isolation, yet both draw on the same scarce resource —
-real-world interaction. Given a fixed budget of real rollouts, how should it be
-split? We study this on a controlled `ParamPendulum` task (a sim-to-sim proxy for
-sim-to-real) and map the zero-shot return surface over the (budget `n`,
-randomization width `w`) grid.
+This repo contains the code, raw CSVs, and results for "How Should a Simulation-to-Reality Transfer Budget Be Spent?" (arXiv:2606.22062v2). Submitted to IEEE IROS First Workshop on Sim2Real and Classical Control 2026.
 
-## The two levers
+## Layout
 
-- **`n`** — real-world rollouts spent on system identification. More rollouts →
-  better point estimate `theta_hat` → higher *fidelity*.
-- **`w`** — domain-randomization half-width around `theta_hat` (relative). Larger
-  `w` → more *breadth* (robust but suboptimal). Free in simulation.
-
-`n = 0` trains around the nominal prior (no identification); `w = 0` trains at the
-point estimate only. The interesting regime is the interior.
-
-## Results
-
-Latest run: `theta* = (mass 2.0, length 1.5)`, 250 runs (5 budgets × 5 widths ×
-10 seeds), SAC learner.
-
-![Mean zero-shot return over the (n, w) grid](results/figures/heatmap.png)
-
-![A little real data closes most of the gap](results/figures/pareto.png)
-
-In this well-specified, identifiable regime, spending the budget on **system
-identification dominates estimate-centered randomization breadth**. At `w = 0`,
-going from no identification to a full budget improves zero-shot return by
-**+434 (95% CI [+415, +458])**, with most of the gain realized by ~10 rollouts
-(`n = 0` → `n = 10`: +427 [+407, +448]). Breadth does not substitute: `w = 0` is
-optimal at every budget `n ≥ 5`, and the widest band (`w = 0.5`) significantly
-hurts at every positive budget. Breadth helps only marginally — and not
-significantly — when no identification is possible at all (`n = 0`, best `w =
-0.2`, +54 [-4, +114]). All CIs are paired bootstraps over the 10 matched seeds.
-
-Practical rule for this regime: **measure first; randomize the residual
-uncertainty.**
+```
+src/
+  config.py          grid + constants + task_id <-> (n, w, seed) mapping (single source of truth)
+  param_pendulum.py  Pendulum env with settable (mass, length)
+  dr_wrapper.py      domain-randomization reset wrapper
+  system_id.py       estimate theta_hat from n real rollouts (grid ID, or "ideal" ablation)
+  train.py           one run: ID -> DR-train -> zero-shot eval -> result.json
+  evaluate.py        zero-shot evaluation on the real system
+  aggregate.py       collect result.json files -> summary.csv
+  stats.py           per-cell SEM + paired-bootstrap CIs for the reported contrasts
+  plot.py            heatmap.png + pareto.png
+  make_manifests.py  emit run lists for the robustness experiments
+run_local.sh         quick local smoke test
+results/             aggregated CSVs + figures (raw per-run artifacts are gitignored)
+```
 
 ## Quick start
 
@@ -63,28 +44,11 @@ python -m src.plot      --summary results/summary.csv --outdir results/figures
 ```
 
 Each run decodes its own `(n, w, seed)` from the task id via
-`config.decode_task_id`, so any executor — a shell loop, GNU parallel, or a job
-scheduler — sweeps the grid without a separate index file. Re-running is
+`config.decode_task_id`, so any executor, such as, for example, a shell loop, GNU parallel, or a job
+scheduler sweeps the grid without a separate index file. Re-running is
 idempotent: a run whose `result.json` is `status: ok` is skipped, so a partial
 sweep can be resumed safely.
 
-## Layout
-
-```
-src/
-  config.py          grid + constants + task_id <-> (n, w, seed) mapping (single source of truth)
-  param_pendulum.py  Pendulum env with settable (mass, length)
-  dr_wrapper.py      domain-randomization reset wrapper
-  system_id.py       estimate theta_hat from n real rollouts (grid ID, or "ideal" ablation)
-  train.py           one run: ID -> DR-train -> zero-shot eval -> result.json
-  evaluate.py        zero-shot evaluation on the real system
-  aggregate.py       collect result.json files -> summary.csv
-  stats.py           per-cell SEM + paired-bootstrap CIs for the reported contrasts
-  plot.py            heatmap.png + pareto.png
-  make_manifests.py  emit run lists for the robustness experiments
-run_local.sh         quick local smoke test
-results/             aggregated CSVs + figures (raw per-run artifacts are gitignored)
-```
 
 ## Grid and configuration
 
@@ -92,6 +56,7 @@ results/             aggregated CSVs + figures (raw per-run artifacts are gitign
 250 runs. The learner is SAC (`total_timesteps = 75000`); the reality gap is
 `theta* = (2.0, 1.5)` with sensor noise `1.0`. Everything is defined in
 `src/config.py` — edit only that file to change the sweep.
+
 
 Key overrides (CLI flags on `src.train`):
 
@@ -101,24 +66,7 @@ Key overrides (CLI flags on `src.train`):
   not used for any reported figure).
 - `--theta_star`, `--id_obs_noise`, `--dr_mode` — vary the reality gap, sensor
   noise, and randomization scheme for the robustness experiments.
-
-## Robustness experiments
-
-`python -m src.make_manifests` writes run lists that vary the gap magnitude,
-sensor noise, and a prior-range DR baseline. Aggregated outputs are tracked:
-`results/exp_gap_*.csv`, `results/exp_noise_*.csv`, `results/exp_priorDR.csv`,
-with companion figures under `results/fig_gap_*/`. The qualitative conclusion —
-identification dominates breadth in the identifiable regime — holds across both
-tested gap magnitudes and noise levels.
-
-## Notes and caveats
-
-- **Sim-to-sim, not hardware**: a deliberate scope choice for a clean, isolated
-  preliminary result. Conclusions are stated for the identifiable regime.
-- 10 seeds per cell, so every reported number carries a std / SEM and every
-  contrast carries a bootstrap CI.
-- The `grid` identifier is a one-step-prediction least-squares fit over a 61×61
-  (mass, length) grid: cheap, deterministic, and adequate for the task.
+  
 
 ## License
 
