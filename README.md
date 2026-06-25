@@ -81,7 +81,7 @@ embarrassingly parallel; on a single machine it runs sequentially as written.
 **1. Set up the environment**
 
 ```bash
-git clone https://github.com/<your-username>/sim2real_budget.git
+git clone https://github.com/YTomar79/sim2real_budget.git
 cd sim2real_budget
 
 python -m venv .venv && source .venv/bin/activate
